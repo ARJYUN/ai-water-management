@@ -25,4 +25,19 @@ app.use('/api/reports',   require('./routes/reports'));
 app.use('/api/admin',     require('./routes/admin'));
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+app.listen(PORT, async () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+  
+  // Auto-seed if database is empty
+  try {
+    const db = require('./config/db');
+    const [rows] = await db.query('SELECT COUNT(*) as count FROM stakeholders');
+    if (rows[0].count === 0) {
+      console.log('📭 Database is empty. Starting auto-seed...');
+      const seed = require('./seed');
+      await seed(true); // true = skip process.exit
+    }
+  } catch (err) {
+    console.error('⚠️ Auto-seed check failed (ensure DB is reachable):', err.message);
+  }
+});
