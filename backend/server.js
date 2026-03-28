@@ -38,16 +38,28 @@ app.listen(PORT, async () => {
     const [tables] = await db.query("SHOW TABLES LIKE 'stakeholders'");
     
     if (tables.length === 0) {
-      console.log('📭 Database is empty. Initializing schema...');
+      console.log('📭 Database is empty. Initializing schema step-by-step...');
       const schemaPath = path.join(__dirname, '../database/schema.sql');
-      let schemaSql = fs.readFileSync(schemaPath, 'utf8');
+      const schemaSql = fs.readFileSync(schemaPath, 'utf8');
       
-      // Clean schema SQL (remove CREATE DATABASE and USE to avoid Railway permission errors)
-      schemaSql = schemaSql
-        .replace(/CREATE DATABASE IF NOT EXISTS \w+;/gi, '')
-        .replace(/USE \w+;/gi, '');
+      // Split by semicolon, but be careful with newlines
+      const statements = schemaSql
+        .split(';')
+        .map(s => s.trim())
+        .filter(s => s.length > 0 && 
+                     !s.toUpperCase().startsWith('CREATE DATABASE') && 
+                     !s.toUpperCase().startsWith('USE'));
 
-      await db.query(schemaSql);
+      for (const statement of statements) {
+        try {
+          await db.query(statement);
+        } catch (sErr) {
+          // Ignore "Table already exists" if it happens during partial init
+          if (!sErr.message.includes('already exists')) {
+            throw sErr;
+          }
+        }
+      }
       console.log('✅ Schema initialized successfully.');
     }
 
