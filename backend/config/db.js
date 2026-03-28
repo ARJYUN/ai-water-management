@@ -6,6 +6,7 @@ const pool = mysql.createPool({
   user:     process.env.DB_USER || 'root',
   password: process.env.DB_PASS || '',
   database: process.env.DB_NAME || 'water_ai_db',
+  port:     process.env.DB_PORT || 3306,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0
