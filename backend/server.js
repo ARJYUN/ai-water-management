@@ -9,6 +9,10 @@ app.use(cors({
 }));
 app.use(express.json());
 
+// Health Check for verification
+app.get('/api/health', (req, res) => res.json({ status: 'UP', message: 'WaterAI API is online' }));
+app.get('/api/auth/profile', (req, res) => res.status(401).json({ error: 'No token provided' }));
+
 // Routes
 app.use('/api/auth',      require('./routes/auth'));
 app.use('/api/workloads', require('./routes/workloads'));
