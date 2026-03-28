@@ -7,6 +7,7 @@ const pool = mysql.createPool({
   password: process.env.DB_PASS || '',
   database: process.env.DB_NAME || 'water_ai_db',
   port:     process.env.DB_PORT || 3306,
+  multipleStatements: true, // Enable for schema initialization
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0

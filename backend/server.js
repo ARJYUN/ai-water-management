@@ -14,30 +14,51 @@ app.get('/api/health', (req, res) => res.json({ status: 'UP', message: 'WaterAI 
 app.get('/api/auth/profile', (req, res) => res.status(401).json({ error: 'No token provided' }));
 
 // Routes
-app.use('/api/auth',      require('./routes/auth'));
+app.use('/api/auth', require('./routes/auth'));
 app.use('/api/workloads', require('./routes/workloads'));
-app.use('/api/metrics',   require('./routes/metrics'));
+app.use('/api/metrics', require('./routes/metrics'));
 app.use('/api/analytics', require('./routes/analytics'));
-app.use('/api/optimize',  require('./routes/optimize'));
-app.use('/api/policies',  require('./routes/policies'));
-app.use('/api/alerts',    require('./routes/alerts'));
-app.use('/api/reports',   require('./routes/reports'));
-app.use('/api/admin',     require('./routes/admin'));
+app.use('/api/optimize', require('./routes/optimize'));
+app.use('/api/policies', require('./routes/policies'));
+app.use('/api/alerts', require('./routes/alerts'));
+app.use('/api/reports', require('./routes/reports'));
+app.use('/api/admin', require('./routes/admin'));
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, async () => {
   console.log(`🚀 Server running on port ${PORT}`);
   
-  // Auto-seed if database is empty
+  // Auto-Initialize Database (Schema + Seed)
   try {
     const db = require('./config/db');
+    const fs = require('fs');
+    const path = require('path');
+
+    // Check if tables exist
+    const [tables] = await db.query("SHOW TABLES LIKE 'stakeholders'");
+    
+    if (tables.length === 0) {
+      console.log('📭 Database is empty. Initializing schema...');
+      const schemaPath = path.join(__dirname, '../database/schema.sql');
+      let schemaSql = fs.readFileSync(schemaPath, 'utf8');
+      
+      // Clean schema SQL (remove CREATE DATABASE and USE to avoid Railway permission errors)
+      schemaSql = schemaSql
+        .replace(/CREATE DATABASE IF NOT EXISTS \w+;/gi, '')
+        .replace(/USE \w+;/gi, '');
+
+      await db.query(schemaSql);
+      console.log('✅ Schema initialized successfully.');
+    }
+
+    // Auto-seed if needed
     const [rows] = await db.query('SELECT COUNT(*) as count FROM stakeholders');
     if (rows[0].count === 0) {
-      console.log('📭 Database is empty. Starting auto-seed...');
+      console.log('🌱 No data found. Starting auto-seed...');
       const seed = require('./seed');
-      await seed(true); // true = skip process.exit
+      await seed(true); 
     }
   } catch (err) {
-    console.error('⚠️ Auto-seed check failed (ensure DB is reachable):', err.message);
+    console.error('⚠️ Database Initialization Error:', err.message);
   }
 });

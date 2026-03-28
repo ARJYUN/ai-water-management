@@ -54,13 +54,13 @@ export default function Login() {
           <div style={{ marginBottom: '16px' }}>
             <label style={{ fontSize: '0.78rem', color: '#94a3b8', fontWeight: 600, display: 'block', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Email</label>
             <input className="input-dark" type="email" placeholder="admin@water.ai" value={form.email}
-              onChange={e => setForm({...form, email: e.target.value})} required />
+              onChange={e => setForm({ ...form, email: e.target.value })} required />
           </div>
           <div style={{ marginBottom: '24px' }}>
             <label style={{ fontSize: '0.78rem', color: '#94a3b8', fontWeight: 600, display: 'block', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Password</label>
             <div style={{ position: 'relative' }}>
               <input className="input-dark" type={show ? 'text' : 'password'} placeholder="••••••••" value={form.password}
-                onChange={e => setForm({...form, password: e.target.value})} required style={{ paddingRight: '44px' }} />
+                onChange={e => setForm({ ...form, password: e.target.value })} required style={{ paddingRight: '44px' }} />
               <button type="button" onClick={() => setShow(!show)} style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#64748b' }}>
                 {show ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
@@ -87,7 +87,7 @@ export default function Login() {
                 padding: '8px', color, fontSize: '0.75rem', fontWeight: 600, cursor: 'pointer',
                 transition: 'all 0.2s'
               }} onMouseEnter={e => e.currentTarget.style.background = `${color}25`}
-                 onMouseLeave={e => e.currentTarget.style.background = `${color}15`}>
+                onMouseLeave={e => e.currentTarget.style.background = `${color}15`}>
                 {label}
               </button>
             ))}
