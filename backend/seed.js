@@ -15,6 +15,10 @@ const sources = ['AI Data Center', 'Cooling Subsystem', 'Cloud Infrastructure'];
 
 const kwhByType = { training: 400, inference: 100, scaling: 200 };
 
+function randomBetween(min, max) {
+  return Math.random() * (max - min) + min;
+}
+
 async function seed(skipExit = false) {
   console.log('🌱 Seeding database...');
 
