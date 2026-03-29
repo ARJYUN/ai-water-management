@@ -4,9 +4,9 @@ const bcrypt = require('bcryptjs');
 const { v4: uuidv4 } = require('uuid');
 
 const regions = [
-  { name: 'us-central',   wue: 1.1 },
-  { name: 'asia-east',    wue: 1.3 },
-  { name: 'europe-west',  wue: 0.9 }
+  { name: 'us-central', wue: 1.1 },
+  { name: 'asia-east', wue: 1.3 },
+  { name: 'europe-west', wue: 0.9 }
 ];
 
 const workloadTypes = ['training', 'inference', 'scaling'];
@@ -35,10 +35,10 @@ async function seed(skipExit = false) {
 
     // Seed stakeholders
     const users = [
-      { name: 'Alice Admin',    email: 'admin@water.ai',         role: 'Admin' },
-      { name: 'Dave DevOps',    email: 'devops@water.ai',        role: 'DevOps Engineer' },
-      { name: 'Susan Sustain',  email: 'sustain@water.ai',       role: 'Sustainability Officer' },
-      { name: 'Victor Viewer',  email: 'viewer@water.ai',        role: 'Viewer' }
+      { name: 'Arjun Admin', email: 'admin@water.ai', role: 'Admin' },
+      { name: 'Abhinav DevOps', email: 'devops@water.ai', role: 'DevOps Engineer' },
+      { name: 'Adarsh Sustain', email: 'sustain@water.ai', role: 'Sustainability Officer' },
+      { name: 'Ayush Viewer', email: 'viewer@water.ai', role: 'Viewer' }
     ];
 
     const password = await bcrypt.hash('password123', 10);
@@ -116,7 +116,7 @@ async function seed(skipExit = false) {
     const adminID = userMap['Admin'];
     await db.query(
       'INSERT INTO reports (reportID, generated_by, content) VALUES (?,?,?)',
-      [uuidv4(), adminID, JSON.stringify({ summary: 'Initial seeded report — 30-day water usage baseline established.', totalMetrics: 150, regions: ['us-central','asia-east','europe-west'] })]
+      [uuidv4(), adminID, JSON.stringify({ summary: 'Initial seeded report — 30-day water usage baseline established.', totalMetrics: 150, regions: ['us-central', 'asia-east', 'europe-west'] })]
     );
     console.log('✅ Reports seeded');
 
