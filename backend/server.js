@@ -39,7 +39,7 @@ app.listen(PORT, async () => {
     
     if (tables.length === 0) {
       console.log('📭 Database is empty. Initializing schema step-by-step...');
-      const schemaPath = path.join(__dirname, '../database/schema.sql');
+      const schemaPath = path.join(__dirname, 'schema.sql');
       const schemaSql = fs.readFileSync(schemaPath, 'utf8');
       
       // Split by semicolon, but be careful with newlines
