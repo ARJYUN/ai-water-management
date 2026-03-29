@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { v4: uuidv4 } = require('uuid');
 const db = require('../config/db');
+const { calculateEstimatedLiters } = require('../utils/waterCalculator');
 const auth = require('../middleware/auth');
 const role = require('../middleware/role');
 
@@ -60,9 +61,7 @@ router.patch('/:id/status', auth, role('Admin','DevOps Engineer'), async (req, r
         'SELECT threshold_liters FROM water_policies WHERE region = ?', [workload.region]
       );
       if (policies.length > 0) {
-        const kwhByType = { training: 400, inference: 100, scaling: 200 };
-        const wueByRegion = { 'us-central': 1.1, 'asia-east': 1.3, 'europe-west': 0.9 };
-        const estimatedLiters = (kwhByType[workload.type] || 200) * (wueByRegion[workload.region] || 1.1);
+        const estimatedLiters = calculateEstimatedLiters(workload.type, workload.region);
         if (estimatedLiters > policies[0].threshold_liters) {
           newStatus = 'PausedForOptimization';
           await db.query(
